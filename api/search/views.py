@@ -31,7 +31,7 @@ def insert_data():
         mapping = {"settings": {"number_of_shards": 2, "number_of_replicas": 1},
                    "mappings": {"properties": {"content": {"type": "text"}}}}
         es.indices.create(
-            index="file_search",
+            index="file_searching",
             body=mapping,
             ignore=400  # ignore 400 already exists code
         )
@@ -49,7 +49,7 @@ def insert_data():
                 data_dict['file_type'] = file_format[-1]
                 data_dict['timestamp'] = datetime.now()
 
-                es.index(index='file_search', id=id, body=data_dict)
+                es.index(index='file_searching', id=id, body=data_dict)
 
             return success({})
 
@@ -66,8 +66,8 @@ def insert_data():
             'timestamp': datetime.now()
         }
 
-        es.index(index='file_search', id=id, body=body)
-        return success({"result": body})
+        es.index(index='file_searching', id=id, body=body)
+        return success({})
     except Exception as e:
         print(traceback.format_exc())
         return failed({}, str(e))
@@ -89,7 +89,7 @@ def search():
                 }
             }
         }
-        res = es.search(index="file_search", body=body)
+        res = es.search(index="file_searching", body=body)
         data = res['hits']['hits']
         return success({"result": data}, "Successfully retrieved")
     except Exception as e:
