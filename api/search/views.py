@@ -35,7 +35,10 @@ def insert_data():
             body=mapping,
             ignore=400  # ignore 400 already exists code
         )
+        if 'file' not in request.files:
+            return failed({}, "File is missing please send the file.")
         file_obj = request.files['file']
+
         filename = file_obj.filename
         file_format = filename.split('.')
         if file_format[-1] not in ['pdf']:

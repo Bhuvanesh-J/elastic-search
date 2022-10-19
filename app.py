@@ -1,7 +1,7 @@
 from elasticsearch import Elasticsearch
 from flask import Flask
 from flask_cors import CORS
-
+from  decouple import config
 from configurations.configurations import register_blueprint
 
 app = Flask(__name__)
@@ -14,12 +14,11 @@ CORS(app)
 #                    basic_auth=(ELASTIC_USER, ELASTIC_PASS),
 #                    verify_certs=False)
 
-es = Elasticsearch('https://elastic:_VVwXtRyQtvvZ9Hz7h89@100.26.110.188:9200', verify_certs=False)
-print(es.info())
+es = Elasticsearch(config('elastic_search_end_point'), verify_certs=False)
 
-# @app.route('/',methods=['GET'])
-# def home():
-#    return "<h1 style='text-align:center'>ELASTIC SEARCH</h1>"
+@app.route('/',methods=['GET'])
+def home():
+   return "<h1 style='text-align:center'>ELASTIC SEARCH</h1>"
 
 
 if __name__ == "__main__":
