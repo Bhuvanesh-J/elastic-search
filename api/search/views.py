@@ -53,6 +53,14 @@ def insert_data():
                 data_dict['timestamp'] = datetime.now()
 
                 es.index(index='file_searching', id=id, body=data_dict)
+            id = uuid.uuid4()
+            es.index(index='file_history', id=id, body={
+                'id': id,
+                'file_name': filename,
+                'file_type': file_format[-1],
+                'timestamp': datetime.now(),
+                'search':"all_files"
+            })
 
             return success({})
 
@@ -70,6 +78,13 @@ def insert_data():
         }
 
         es.index(index='file_searching', id=id, body=body)
+        es.index(index='file_history', id=id, body={
+            'id': id,
+            'file_name': filename,
+            'file_type': file_format[-1],
+            'timestamp': datetime.now(),
+            'search':"all_files"
+        })
         return success({})
     except Exception as e:
         print(traceback.format_exc())
@@ -93,6 +108,26 @@ def search():
             }
         }
         res = es.search(index="file_searching", body=body)
+        data = res['hits']['hits']
+        return success({"result": data}, "Successfully retrieved")
+    except Exception as e:
+        print(traceback.format_exc())
+        return failed({}, str(e))
+
+@es_search.route('get_file_history', methods=['GET'])
+def search():
+    try:
+        from app import es
+        body = {
+            "query": {
+                "multi_match": {
+                    "query": 'all_files',
+                    "fields": ['search']
+                    # "fields": ['content']
+                }
+            }
+        }
+        res = es.search(index="file_history", body=body)
         data = res['hits']['hits']
         return success({"result": data}, "Successfully retrieved")
     except Exception as e:
