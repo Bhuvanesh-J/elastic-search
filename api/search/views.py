@@ -115,7 +115,7 @@ def search():
         return failed({}, str(e))
 
 @es_search.route('get_file_history', methods=['GET'])
-def search():
+def get_file_history():
     try:
         from app import es
         body = {
